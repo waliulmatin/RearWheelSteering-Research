@@ -3,18 +3,18 @@
  * Name: Waliul Matin
  * Semester: FA19
  * Project Name: Rear Wheel Steering for FSAE car
- * Version: 2.0
- * Update log: This version streamlines the code to make it less redundant and make it easier for debugging. More comments have been added to aid in the understanding of future users. 
+ * Version: 2.1a
+ * Update log: Final project code implemented in the system. This code was configured to control the left actuator specifically.
  */
 
  /////////////////////////////// ----------- Variables
 const int pinPwmA = 6, pinPwmB = 5;
-double desPos=0, accPos=0, pot=0;
-const double sF = 1.5;
-double dE=0, iE=0;
-double error=0, lasterror=0;
-const double kp = 10, ki = 0, kd = 0;
-int A_SIG=0, B_SIG=1;
+double desPos=0, accPos=0, pot=0;            //Variables for control
+const double sF = 1.5;                       //Scale factor
+double dE=0, iE=0;                           //Derivative error and Integral error
+double error=0, lasterror=0;                 //errors
+const double kp = 10, ki = 0, kd = 0;        //PID gain constants 
+int A_SIG=0, B_SIG=1;                        //Encoder signal variables 
 
  ///////////////////////////////
 

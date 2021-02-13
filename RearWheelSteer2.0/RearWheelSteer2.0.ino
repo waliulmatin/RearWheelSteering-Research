@@ -4,23 +4,23 @@
  * Semester: FA19
  * Project Name: Rear Wheel Steering for FSAE car
  * Version: 2.0
- * Update log: This version streamlines the code to make it less redundant and make it easier for debugging. More comments have been added to aid in the understanding of future users. 
+ * Update log: Further improvements to the code from version 1 to make it stable
  */
 
  /////////////////////////////// ----------- Variables
 const int pinPwmA = 6, pinPwmB = 5;
-int desPos, accPos;
-int sF;
-int dE, iE;
-int error, lasterror;
-const int kp = 1, ki = 0, kd = 0;
-int A_SIG=0, B_SIG=1;
+int desPos, accPos;                           //Variables for control 
+int sF;                                       //Scale factor
+int dE, iE;                                   //Derivative error and Integral error
+int error, lasterror;                         //errors
+const int kp = 1, ki = 0, kd = 0;             //PID gain constants 
+int A_SIG=0, B_SIG=1;                         //Encoder signal variables 
 
  ///////////////////////////////
 
  void setup(){
   
-  //TCCR0B = TCCR0B & 0B11111000|0X01;          //Changes the PWM frequency for the designated pins
+  //TCCR0B = TCCR0B & 0B11111000|0X01;        //Changes the PWM frequency for the designated pins
   
   attachInterrupt(0, A_RISE, RISING);         //Connect A output to interrupt pin 1 (D2)
   attachInterrupt(1, B_RISE, RISING);         //Connect B output to interrupt pin 2 (D3)
@@ -39,7 +39,7 @@ int A_SIG=0, B_SIG=1;
   //Serial.println(sF);
   if((desPos >= 573) && (desPos <= 696)){     //Sets up condition so device will only control the motor when the steering wheel is in the desired range
     desPos = (analogRead(A0)+(offset(analogRead(A1))))*sF; //Converts the pot value to match the scale of the encoder. Uses the offset function and multiplies with the scale Factor
-    Control((PID(desPos,accPos)));              //Calls upon the Control function with the return of the PID function as the input
+    Control((PID(desPos,accPos)));            //Calls upon the Control function with the return of the PID function as the input
   }
   else{
     Control(0);                               //Sets the pwm signal to 0 when steering wheel is not in desire range
@@ -53,9 +53,9 @@ int A_SIG=0, B_SIG=1;
   Control(255);                               //Commands the actuator to go full throttle one way
   delay(5000);                                //delays for 2 seconds to allow actuator to move
   accPos = 0;                                 //sets the encoder value to zero for reference
-  Control(-255);                            //Commands the actuator to go full throttle the other way
+  Control(-255);                              //Commands the actuator to go full throttle the other way
   delay(5000);                                //delays for 2 seconds to allow actuator to move
-  sF = (abs(accPos))/1024;                       //scale factor to convert pot value to be on the same scale as the encoder
+  sF = (abs(accPos))/1024;                    //scale factor to convert pot value to be on the same scale as the encoder
   Serial.print("accPos:");
   Serial.println(accPos);
   Serial.print("sF:");
@@ -63,9 +63,9 @@ int A_SIG=0, B_SIG=1;
   int desPosint = potcent*sF;                 //sets the intial desPos value to center the wheels
   //Serial.println(sF);
   while(abs(error) >= 20){                    //run this loop while error is greater than 20
-    Control((PID(desPosint,accPos)));           //stays in the while loop until error is less than 20 counts. This is necessary as the Control function needs to run multiple time to control the motor as intended
+    Control((PID(desPosint,accPos)));         //stays in the while loop until error is less than 20 counts. This is necessary as the Control function needs to run multiple time to control the motor as intended
   }
-  //Serial.println("Initialized");              //Prints out Initialized to indicate that device has finished initializing
+  //Serial.println("Initialized");            //Prints out Initialized to indicate that device has finished initializing
  }
 
  int PID(int dP, int aP){                     //Function is used to return the PID terms for motor control with desired position and actual position as inputs
